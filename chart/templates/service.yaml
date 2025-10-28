@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloud-native-ffmpeg.fullname" . }}
+  labels:
+    {{- include "cloud-native-ffmpeg.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "cloud-native-ffmpeg.selectorLabels" . | nindent 4 }}
