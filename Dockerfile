@@ -1,6 +1,6 @@
 FROM jrottenberg/ffmpeg:7.1.2-ubuntu2404 AS ffmpeg
 
-FROM golang:1.21 AS builder
+FROM golang:1.24 AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
