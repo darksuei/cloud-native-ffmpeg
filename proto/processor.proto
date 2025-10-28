@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package processor;
+
+option go_package = "github.com/darksuei/cloud-native-ffmpeg/proto;processor";
+
+service FFmpegProcessor {
+  // Bidirectional streaming — client sends input chunks + args,
+  // server streams processed output chunks back.
+  rpc ProcessStream (stream ProcessRequest) returns (stream ProcessResponse);
+}
+
+message ProcessRequest {
+  string args = 1;      // ffmpeg arguments e.g. "-vf scale=640:480"
+  bytes chunk = 2;      // raw input data chunk (part of the file or stream)
+  bool eof = 3;         // signals end of input stream
+}
+
+message ProcessResponse {
+  bytes chunk = 1;      // output data chunk (processed)
+  bool done = 2;        // signals completion
+}
