@@ -11,10 +11,13 @@ import (
 
 	grpcServer "github.com/darksuei/cloud-native-ffmpeg/internal/grpc"
 	pb "github.com/darksuei/cloud-native-ffmpeg/proto"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
 
 func main() {
+	_ = godotenv.Load()
+
 	// Read port from env or use default
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {

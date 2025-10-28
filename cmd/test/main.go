@@ -10,19 +10,29 @@ import (
 	"time"
 
 	pb "github.com/darksuei/cloud-native-ffmpeg/proto"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
 
 func main() {
+	_ = godotenv.Load()
+
 	if len(os.Args) < 3 {
 		fmt.Println("Usage: go run cmd/test/main.go <inputfile> <ffmpeg_args>")
 		os.Exit(1)
 	}
 
+	port := os.Getenv("GRPC_PORT")
+	if port == "" {
+		port = "50051"
+	}
+
+	fmt.Printf("Testing gRPC server on port %s \n", port)
+
 	filePath := os.Args[1]
 	ffmpegArgs := os.Args[2]
 
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(fmt.Sprintf("localhost:%s", port), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("failed to connect to server: %v", err)
 	}
