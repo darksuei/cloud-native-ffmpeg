@@ -35,14 +35,13 @@ func main() {
 	ffmpegService := grpcServer.NewFFmpegServer()
 	pb.RegisterFFmpegProcessorServer(server, ffmpegService)
 
-
 	// Context to handle graceful shutdown
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	// Run gRPC server in background
 	go func() {
-		log.Printf("🚀 gRPC server running on port %s", port)
+		log.Printf("🚀 gRPC server running on port: %s", port)
 		if err := server.Serve(lis); err != nil {
 			log.Fatalf("failed to serve: %v", err)
 		}
@@ -50,7 +49,7 @@ func main() {
 
 	// Wait for shutdown signal
 	<-ctx.Done()
-	log.Println("Shutdown signal received, stopping server...")
+	log.Println("Shutdown signal received, terminating server...")
 	server.GracefulStop()
-	log.Println("Server stopped cleanly...")
+	log.Println("Server terminated...")
 }

@@ -19,7 +19,9 @@ type Runner struct {
 // NewRunner creates and starts an ffmpeg process with the given args.
 func NewRunner(ctx context.Context, argStr string) (*Runner, error) {
 	args := parseArgs(argStr)
-	fmt.Println("Starting ffmpeg with args:", args)
+	fmt.Println("Spinning up a new ffmpeg process with args: ", args)
+
+	// Instead of spinning up a new process, use an open slot in the pool.
 
 	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
 
@@ -58,8 +60,16 @@ func (r *Runner) WriteInput(chunk []byte) error {
 }
 
 // CloseInput closes ffmpeg's stdin (signals EOF).
-func (r *Runner) CloseInput() error {
-	return r.stdin.Close()
+func (r *Runner) CloseInput() {
+    if r.stdin != nil {
+        _ = r.stdin.Close()
+    }
+    if r.stdout != nil {
+        _ = r.stdout.Close()
+    }
+    if r.stderr != nil {
+        _ = r.stderr.Close()
+    }
 }
 
 // ReadOutput continuously reads stdout and calls the provided handler for each chunk.

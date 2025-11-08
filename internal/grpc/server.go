@@ -63,9 +63,7 @@ func (s *FFmpegServer) ProcessStream(stream pb.FFmpegProcessor_ProcessStreamServ
 	}
 
 	// Step 4: signal ffmpeg input complete
-	if err := runner.CloseInput(); err != nil {
-		fmt.Println("warning: error closing ffmpeg stdin:", err)
-	}
+	defer runner.CloseInput()
 
 	// Step 5: wait for ffmpeg to finish
 	if err := runner.Wait(); err != nil {
